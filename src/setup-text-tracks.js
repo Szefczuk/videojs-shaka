@@ -6,6 +6,8 @@ function find(l, f) {
   }
 }
 
+let selectedTrack;
+let previousSelectedTrack;
 /*
  * Attach text tracks from dash.js to videojs
  *
@@ -61,6 +63,7 @@ function attachDashTextTracksToVideojs(tech, shakaPlayer, tracks) {
       const textTrack = textTracks[i];
 
       if (textTrack.mode === 'showing') {
+        selectedTrack = textTrack;
         // Find the dash track we want to use
 
         /* jshint loopfunc: true */
@@ -74,7 +77,20 @@ function attachDashTextTracksToVideojs(tech, shakaPlayer, tracks) {
       }
     }
 
-    // If the text track has changed, then set it in shaka
+    if (selectedTrack && selectedTrack.label === 'Shaka Player TextTrack' && selectedTrack.mode === 'showing') {
+      return;
+    }
+
+    if (!selectedTrack) {
+      shakaPlayer.setTextTrackVisibility(false);
+      previousSelectedTrack = selectedTrack;
+      return;
+    }
+
+    if (selectedTrack.label !== (previousSelectedTrack && previousSelectedTrack.label)) {
+      shakaPlayer.setTextTrackVisibility(false);
+    }
+
     if (dashTrackToActivate) {
       shakaPlayer.selectTextTrack(dashTrackToActivate);
       shakaPlayer.setTextTrackVisibility(true);
@@ -82,6 +98,7 @@ function attachDashTextTracksToVideojs(tech, shakaPlayer, tracks) {
       shakaPlayer.setTextTrackVisibility(false);
     }
 
+    previousSelectedTrack = selectedTrack;
   }
 
   // Update dash when videojs's selected text track changes.
@@ -99,7 +116,6 @@ function attachDashTextTracksToVideojs(tech, shakaPlayer, tracks) {
 }
 
 export default function setupTextTracks(tech, shakaPlayer) {
-
   // Store the tracks that we've added so we can remove them later.
   let dashTracksAttachedToVideoJs = [];
 
