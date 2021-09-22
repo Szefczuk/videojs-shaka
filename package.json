@@ -23,8 +23,7 @@
     "docs": "npm-run-all docs:*",
     "docs:api": "jsdoc src -g plugins/markdown -r -d docs/api",
     "docs:toc": "doctoc --notitle README.md",
-    "server": "karma start scripts/karma.conf.js --singleRun=false --auto-watch",
-    "start": "npm-run-all -p server watch",
+    "start": "npm-run-all -p watch",
     "update-changelog": "conventional-changelog -p videojs -i CHANGELOG.md -s",
     "version": "is-prerelease || npm run update-changelog && git add CHANGELOG.md",
     "watch": "npm-run-all -p watch:*",
@@ -76,8 +75,7 @@
   "dependencies": {
     "global": "^4.3.2",
     "mux.js": "^5.5.1",
-    "shaka-player": "3.2.0",
-    "video.js": "^6 || ^7"
+    "shaka-player": "3.2.0"
   },
   "devDependencies": {
     "@videojs/generator-helpers": "~1.0.0",
